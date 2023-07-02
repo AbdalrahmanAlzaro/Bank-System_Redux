@@ -1,19 +1,36 @@
-import React from 'react';
+// src/Main.js
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addAccount, deleteAccount } from './store';
 
-function Main() {
+const Main = () => {
   const accounts = useSelector(state => state.accounts);
   const dispatch = useDispatch();
 
-  const handleAddAccount = () => {
+  const [formData, setFormData] = useState({
+    customerName: '',
+    accountNumber: '',
+    accountType: ''
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAddAccount = (e) => {
+    e.preventDefault();
     const newAccount = {
-      id: Math.floor(Math.random() * 1000) + 1,
-      customerName: 'New Customer',
-      accountNumber: 'New Account Number',
-      accountType: 'New Account Type'
+      id: Date.now(),
+      customerName: formData.customerName,
+      accountNumber: formData.accountNumber,
+      accountType: formData.accountType
     };
     dispatch(addAccount(newAccount));
+    setFormData({
+      customerName: '',
+      accountNumber: '',
+      accountType: ''
+    });
   };
 
   const handleDeleteAccount = (accountId) => {
@@ -21,46 +38,89 @@ function Main() {
   };
 
   return (
-    <div className="p-4">
-    <h1 className="text-2xl font-bold mb-4">Bank App</h1>
-    <table className="w-full border-collapse">
-      <thead>
-        <tr className="bg-gray-200">
-          <th className="py-2 px-4 border-b">ID</th>
-          <th className="py-2 px-4 border-b">Customer Name</th>
-          <th className="py-2 px-4 border-b">Account Number</th>
-          <th className="py-2 px-4 border-b">Account Type</th>
-          <th className="py-2 px-4 border-b"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {accounts.map(account => (
-          <tr key={account.id} className="hover:bg-gray-100">
-            <td className="py-2 px-4 border-b">{account.id}</td>
-            <td className="py-2 px-4 border-b">{account.customerName}</td>
-            <td className="py-2 px-4 border-b">{account.accountNumber}</td>
-            <td className="py-2 px-4 border-b">{account.accountType}</td>
-            <td className="py-2 px-4 border-b">
-              <button
-                onClick={() => handleDeleteAccount(account.id)}
-                className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
-              >
-                Delete
-              </button>
-            </td>
+    <main className="p-4">
+      <table className="w-full border-collapse mb-4">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="py-2 px-4 border-b">ID</th>
+            <th className="py-2 px-4 border-b">Customer Name</th>
+            <th className="py-2 px-4 border-b">Account Number</th>
+            <th className="py-2 px-4 border-b">Account Type</th>
+            <th className="py-2 px-4 border-b"></th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-    <button
-      onClick={handleAddAccount}
-      className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
-    >
-      Add Account
-    </button>
-  </div>
-  
+        </thead>
+        <tbody>
+          {accounts.map(account => (
+            <tr key={account.id} className="hover:bg-gray-100">
+              <td className="py-2 px-4 border-b">{account.id}</td>
+              <td className="py-2 px-4 border-b">{account.customerName}</td>
+              <td className="py-2 px-4 border-b">{account.accountNumber}</td>
+              <td className="py-2 px-4 border-b">{account.accountType}</td>
+              <td className="py-2 px-4 border-b">
+                <button
+                  onClick={() => handleDeleteAccount(account.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <form onSubmit={handleAddAccount} className="mb-4">
+        <div className="flex flex-col mb-4">
+          <label htmlFor="customerName" className="text-lg font-medium mb-2">
+            Customer Name
+          </label>
+          <input
+            type="text"
+            id="customerName"
+            name="customerName"
+            value={formData.customerName}
+            onChange={handleChange}
+            className="border-gray-300 border rounded py-2 px-4"
+            required
+          />
+        </div>
+        <div className="flex flex-col mb-4">
+          <label htmlFor="accountNumber" className="text-lg font-medium mb-2">
+            Account Number
+          </label>
+          <input
+            type="text"
+            id="accountNumber"
+            name="accountNumber"
+            value={formData.accountNumber}
+            onChange={handleChange}
+            className="border-gray-300 border rounded py-2 px-4"
+            required
+          />
+        </div>
+        <div className="flex flex-col mb-4">
+          <label htmlFor="accountType" className="text-lg font-medium mb-2">
+            Account Type
+          </label>
+          <input
+            type="text"
+            id="accountType"
+            name="accountType"
+            value={formData.accountType}
+            onChange={handleChange}
+            className="border-gray-300 border rounded py-2 px-4"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+        >
+          Add Account
+        </button>
+      </form>
+    </main>
   );
-}
+};
 
 export default Main;
