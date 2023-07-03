@@ -31,7 +31,8 @@ const initialState = {
       accountNumber: '987654',
       accountType: 'Student accounts'
     }
-  ]
+  ],
+  numberOfAccounts: 2 // Added numberOfAccounts to the initial state
 };
 
 // Define the reducer
@@ -40,7 +41,8 @@ const reducer = (state = initialState, action) => {
     case ADD_ACCOUNT:
       return {
         ...state,
-        accounts: [...state.accounts, action.payload]
+        accounts: [...state.accounts, action.payload],
+        numberOfAccounts: state.numberOfAccounts + 1 // Increment numberOfAccounts when adding a new account
       };
     case DELETE_ACCOUNT:
       return {
